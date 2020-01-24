@@ -1,0 +1,14 @@
+---
+Name: silverstripe-headless
+---
+SilverStripe\CMS\Model\SiteTree:
+  headless_fields:
+    Title: Title
+    MenuTitle: MenuTitle
+    Content: Content
+    Link: Link
+    isSection: Section
+SilverStripe\Assets\File:
+  headless_fields:
+    - Title
+    - AbsoluteURL
