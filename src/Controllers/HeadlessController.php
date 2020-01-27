@@ -25,7 +25,15 @@ class HeadlessController extends ContentController
 
     public function MenuData() {
         $menu = $this->Menu(1);
-        return self::castValue($menu, 2);
+        $menuData = self::castValue($menu, 2);
+        $result = [];
+
+        //Force section to be boolean
+        foreach($menuData as $item) {
+            $item["section"] = $item["section"] == "1";
+            $result[] = $item;
+        }
+        return $result;
     }
 
     public function index(HTTPRequest $request)
@@ -33,7 +41,7 @@ class HeadlessController extends ContentController
         $this->getResponse()->addHeader('Content-Type', 'application/json');
 
         $data = self::getHeadlessData($this->data(), 3);
-        $data["Menu"] = $this->MenuData();
+        $data["menu"] = $this->MenuData();
 
         return json_encode([
             "status" => 200,
@@ -77,12 +85,14 @@ class HeadlessController extends ContentController
     public static function headlessFields(DataObject $obj)
     {
         $rawFields = $obj->config()->get("headless_fields");
+        if(!$rawFields)
+            $rawFields = [];
 
         $fields = [];
 
         //Always add ID and ClassName
-        $fields['ID'] = 'ID';
-        $fields['ClassName'] = 'ClassName';
+        $fields['ID'] = 'id';
+        $fields['ClassName'] = 'className';
 
         // Merge associative / numeric keys (from DataObject::summaryFields
         foreach ($rawFields as $key => $value) {

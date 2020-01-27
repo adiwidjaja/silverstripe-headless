@@ -3,12 +3,13 @@ Name: silverstripe-headless
 ---
 SilverStripe\CMS\Model\SiteTree:
   headless_fields:
-    Title: Title
-    MenuTitle: MenuTitle
-    Content: Content
-    Link: Link
-    isSection: Section
+    Title: title
+    MenuTitle: menuTitle
+    Content: content
+    RelativeLink: link
+    isSection: section
+    SiteConfig.Title: siteTitle
 SilverStripe\Assets\File:
   headless_fields:
-    - Title
-    - AbsoluteURL
+    - Title: title
+    - AbsoluteURL: url
