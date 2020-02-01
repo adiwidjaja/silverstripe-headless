@@ -11,5 +11,5 @@ SilverStripe\CMS\Model\SiteTree:
     SiteConfig.Title: siteTitle
 SilverStripe\Assets\File:
   headless_fields:
-    - Title: title
-    - AbsoluteURL: url
+    Title: title
+    AbsoluteURL: url

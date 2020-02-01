@@ -3,13 +3,10 @@
 namespace ATW\Headless\Controllers;
 
 use App\DataFormatter\JSONDataFormatter;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Convert;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType;
 use SilverStripe\ORM\SS_List;
-use SilverStripe\RestfulServer\DataFormatter;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\CMS\Controllers\ContentController;
 
@@ -30,7 +27,7 @@ class HeadlessController extends ContentController
 
         //Force section to be boolean
         foreach($menuData as $item) {
-            $item["section"] = $item["section"] == "1";
+            $item["section"] = isset($item["section"]) && $item["section"] == "1";
             $result[] = $item;
         }
         return $result;
@@ -88,6 +85,7 @@ class HeadlessController extends ContentController
         if(!$rawFields)
             $rawFields = [];
 
+
         $fields = [];
 
         //Always add ID and ClassName
@@ -108,8 +106,14 @@ class HeadlessController extends ContentController
 
     public static function getHeadlessData(DataObject $obj, $recurse=0) {
         $fields = self::headlessFields($obj);
+        $data = [];
 
         foreach($fields as $fieldName => $key) {
+            if($fieldName == "Null") { //Dummy to remove fields
+                if(isset($data[$fieldName]))
+                    unset($data[$fieldName]);
+                continue;
+            }
             if (($obj->hasField($fieldName) && !is_object($obj->getField($fieldName)))
                 || $obj->hasMethod("get{$fieldName}")
             ) {
