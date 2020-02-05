@@ -22,13 +22,27 @@ class HeadlessController extends ContentController
 
     public function MenuData() {
         $menu = $this->Menu(1);
-        $menuData = self::castValue($menu, 2);
+//        $menuData = self::castValue($menu, 2);
         $result = [];
 
         //Force section to be boolean
-        foreach($menuData as $item) {
-            $item["section"] = isset($item["section"]) && $item["section"] == "1";
-            $result[] = $item;
+        foreach($menu as $item) {
+            $itemData = self::getHeadlessData($item, 0);
+            $itemData["section"] = isset($itemData["section"]) && $itemData["section"] == "1";
+
+            if($itemData["section"]) {
+                $childs = [];
+                foreach($item->Children() as $child) {
+                    $childItem = self::getHeadlessData($child, 0);
+                    $childItem["section"] = isset($childItem["section"]) && $childItem["section"] == "1";
+                    $childs[] = $childItem;
+                }
+                if($childs)
+                    $itemData["children"] = $childs;
+            }
+
+            $result[] = $itemData;
+
         }
         return $result;
     }
@@ -67,7 +81,7 @@ class HeadlessController extends ContentController
             if($recurse)
                 return self::getHeadlessData($value, $recurse); //Always recurse?
         } elseif ($value instanceof SS_List || is_array($value)) {
-            if($recurse-1 == 0)
+            if($recurse-1 <= 0)
                 return null;
             $data = [];
             foreach($value as $val) {
