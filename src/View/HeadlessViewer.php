@@ -88,6 +88,10 @@ class HeadlessViewer implements Flushable
             if($recurse)
                 return self::getHeadlessData($value, $recurse); //Always recurse?
         } elseif ($value instanceof SS_List || is_array($value)) {
+            if ($value instanceof SS_List) {
+                if($value->Depth)
+                    $recurse = $value->Depth;
+            }
             if($recurse-1 <= 0)
                 return null;
             $data = [];
